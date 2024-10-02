@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
-class resep extends Model
+class userResep extends Model
 {
     use HasFactory;
-    protected $fillable = ['name','bahan','alat','pembuatan','image'];
+    protected $fillable = ['name','deskripsi','bahan','pembuatan','image','kategori'];
+    protected $table = 'userresep_tabel'; 
 
     protected function image(): Attribute
     {

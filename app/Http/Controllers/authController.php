@@ -1,46 +1,85 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function registerUser(Request $request){
+    public function registerUser(Request $request)
+    {
         // Aturan validasi
         $rules = [
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required',
+            'password' => 'required|min:6',
         ];
 
-        // Proses validasi
+        // Validasi input
         $validator = Validator::make($request->all(), $rules);
-        
         if ($validator->fails()) {
-            // Kembalikan respons jika validasi gagal
             return response()->json([
                 'status' => false,
                 'message' => 'Proses validasi gagal',
                 'data' => $validator->errors()
-            ], 400); // Status HTTP 400 untuk bad request
+            ], 401);
         }
 
-        // Proses penyimpanan data jika validasi berhasil
+        // Membuat instance baru dari User
         $datauser = new User();
-        $datauser->name = $request->name;
-        $datauser->email = $request->email;
-        $datauser->password = Hash::make($request->password); // Hash password sebelum menyimpan
+        $datauser->name = $request->input('name');
+        $datauser->email = $request->input('email');
+        $datauser->password = Hash::make($request->input('password'));
+
+        // Menyimpan data user ke database
         $datauser->save();
 
-        // Kembalikan respons setelah data berhasil disimpan
         return response()->json([
             'status' => true,
-            'message' => 'Berhasil memasukkan data baru',
-            'data' => $datauser
-        ], 201); // Status HTTP 201 untuk resource created
+            'message' => 'Berhasil menambahkan data baru'
+        ], 200);
     }
+    public function loginUser(Request $request)
+{
+    $rules = [
+        'email' => 'required|email',
+        'password' => 'required|min:6',
+    ];
+
+    // Validasi input
+    $validator = Validator::make($request->all(), $rules);
+    if ($validator->fails()) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Proses login gagal',
+            'data' => $validator->errors()
+        ], 401);
+    }
+
+    // Mengautentikasi pengguna
+    if (!Auth::attempt($request->only(['email', 'password']))) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Email dan password tidak sesuai'
+        ], 400);
+    }
+
+    // Mendapatkan pengguna yang sedang login
+    $datauser = Auth::user(); // Ambil pengguna yang sedang login
+
+    // Membuat token untuk pengguna
+    $token = $datauser->createToken('api-resepmakan')->plainTextToken;
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Berhasil proses login',
+        'token' => $token // Mengembalikan token
+    ], 200);
 }
-?>
+
+    
+}

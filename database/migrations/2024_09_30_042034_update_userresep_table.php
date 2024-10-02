@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('reseps', function (Blueprint $table) {
-            $table->string('image')->nullable();
+        Schema::table('userresep_tabel', function (Blueprint $table) {
+            $table->json('bahan')->change();
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('reseps', function (Blueprint $table) {
-            //
+        Schema::table('userresep_tabel', function (Blueprint $table) {
+            $table->text('bahan')->change();
         });
     }
 };
