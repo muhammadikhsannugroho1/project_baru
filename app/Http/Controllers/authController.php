@@ -68,17 +68,6 @@ class AuthController extends Controller
         ], 400);
     }
 
-    // Mendapatkan pengguna yang sedang login
-    $datauser = Auth::user(); // Ambil pengguna yang sedang login
-
-    // Membuat token untuk pengguna
-    $token = $datauser->createToken('api-resepmakan')->plainTextToken;
-
-    return response()->json([
-        'status' => true,
-        'message' => 'Berhasil proses login',
-        'token' => $token // Mengembalikan token
-    ], 200);
 }
 
     
