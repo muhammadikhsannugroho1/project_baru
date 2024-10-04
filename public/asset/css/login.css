@@ -1,0 +1,71 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #e0dddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.login-container {
+    background-color:#b8a8a8;
+    padding: 30px;
+    border-radius: 10px;
+    width: 400px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.icon-container {
+    margin-bottom:20px;
+}
+
+.icon-container img {
+    width: 80px;
+    height: 80px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    box-sizing: border-box;
+    font-size: 16px;
+    background-color: #f3e7f7;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    color: #d52727;
+}
+
+.form-group input::placeholder {
+    color: #d52727;
+}
+
+.error-message {
+    color: #d52727;
+    font-size: 12px;
+    margin-top: 5px;
+    text-align: left;
+    margin-left: 15px;
+}
+
+/* Button styling */
+button {
+    background-color: #fff;
+    color: #d52727;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    margin: 0 5px;
+    cursor: pointer;
+    font-size: 16px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+    float: right; /* Tambahkan ini untuk menempatkan tombol di kanan */
+}
