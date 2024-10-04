@@ -1,11 +1,16 @@
 <?php
 
+// routes/web.php
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return view('auth.dashboard');
+})->name('dasboard');
 
-Auth::routes();
+route::get('/daftar', function(){
+    return view('auth.daftar');
+})->name('daftar');
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+route::get('/login', function () {
+    return view('auth.login');
+})->name('login');
