@@ -1,58 +1,37 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Models\UserResep;
+use App\Models\UserResep; // Pastikan Anda menggunakan model yang benar
+use Illuminate\Http\Request;
+
 class AdminController extends Controller
 {
-    // Mengambil semua pengguna
-   public function index()
-{
-    // $this->authorize('viewAny', User::class);
-    return response()->json(User::all(), 200);
-}
-
-
-    // Menghapus pengguna
-    public function destroy(User $user)
+    public function acceptRecipe($id)
     {
-        // $this->authorize('delete', $user);
-        $user->delete();
-        return response()->json(['message' => 'User deleted successfully'], 200);
+        $recipe = UserResep::find($id);
+
+        if (!$recipe) {
+            return response()->json(['status' => false, 'message' => 'Resep tidak ditemukan'], 404);
+        }
+
+        $recipe->status = 'diterima'; // Mengubah status menjadi 'diterima'
+        $recipe->save();
+
+        return response()->json(['status' => true, 'message' => 'Resep diterima']);
     }
 
-    // Fungsi untuk menyetujui resep
-    public function approve($id)
+    public function rejectRecipe($id)
     {
-        // Temukan resep berdasarkan ID
-        $UserResep = UserResep::findOrFail($id);
+        $recipe = UserResep::find($id);
 
-        // Ubah status menjadi diterima
-        $UserResep->status = 'diterima';
-        $UserResep->save();
+        if (!$recipe) {
+            return response()->json(['status' => false, 'message' => 'Resep tidak ditemukan'], 404);
+        }
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Resep berhasil diterima',
-            'data' => $UserResep
-        ], 200);
-    }
+        $recipe->status = 'ditolak'; // Mengubah status menjadi 'ditolak'
+        $recipe->save();
 
-    // Fungsi untuk menolak resep
-    public function reject($id)
-    {
-        // Temukan resep berdasarkan ID
-        $UserResep = UserResep::findOrFail($id);
-
-        // Ubah status menjadi ditolak
-        $UserResep->status = 'ditolak';
-        $UserResep->save();
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Resep berhasil ditolak',
-            'data' => $UserResep
-        ], 200);
+        return response()->json(['status' => true, 'message' => 'Resep ditolak']);
     }
 }
-
+?>

@@ -43,6 +43,12 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'api' => [
+            'driver' => 'jwt',
+            'provider' => 'users',
+        ],
+
         'admin' => [
         'driver' => 'session',
         'provider' => 'admins', // Menggunakan provider 'admins'
@@ -75,7 +81,7 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\userresep::class, // Sesuaikan dengan model Admin
         ],
-    
+
 
         // 'users' => [
         //     'driver' => 'database',
