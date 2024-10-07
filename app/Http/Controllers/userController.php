@@ -3,40 +3,55 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
-class UserController extends Controller
+class UserController extends ApiBaseController
 {
-    // Mengambil semua pengguna
-    public function index()
+    // Register User
+    public function register(Request $request)
     {
-        // Hanya admin yang dapat mengakses ini
-        // $this->authorize('viewAny', User::class);
-        return response()->json(User::all(), 200);
-        
-    }
-
-    // Menampilkan detail pengguna
-    public function show($id)
-    {
-        $user = User::findOrFail($id);
-        return response()->json($user, 200);
-    }
-
-    // Memperbarui pengguna
-    public function update(Request $request, User $user)
-    {
-        // $this->authorize('update', $user);
-
-        // Validasi dan update pengguna
-        $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|string|email|max:255|unique:users,email,' . $user->id,
-            'role' => 'sometimes|in:user,admin',
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
-        $user->update($request->only('name', 'email', 'role'));
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
 
-        return response()->json($user, 200);
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => 'user', // Set default role untuk user
+        ]);
+
+        return $this->sendResponse($user, 'User registered successfully!');
     }
+
+    // Register Admin
+    public function adminRegister(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
+
+        $admin = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => 'admin', // Set default role untuk admin
+        ]);
+
+        return $this->sendResponse($admin, 'Admin registered successfully!');
+    }
+    
 }
