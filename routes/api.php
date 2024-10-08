@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\adminController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\authController;
 use App\Http\Controllers\kategoriController;
 use App\Http\Controllers\userController;
@@ -29,29 +29,30 @@ return response()->json([
 
 
 Route::group(['prefix' => 'userresep', 'as' => 'api.userresep'], function () {
-    Route::get('/', [UserResepController::class, 'index'])->name('index')->middleware('auth.sanctum');
-    Route::get('/create', [UserResepController::class, 'create'])->name('create');
-    Route::post('/', [UserResepController::class, 'store'])->name('store');
-    Route::get('/edit/{id}', [UserResepController::class, 'edit'])->name('edit');
-    Route::put('/{id}', [UserResepController::class, 'update'])->name('update');
+    Route::get('/', [UserResepController::class, 'index'])->name('index');
+    Route::get('/create', [UserResepController::class, 'create'])->name('create')->middleware('auth:api');
+    Route::post('/', [UserResepController::class, 'store'])->name('store')->middleware('auth:api');
+    Route::get('/edit/{id}', [UserResepController::class, 'edit'])->name('edit')->middleware('auth:api');
+    Route::put('/{id}', [UserResepController::class, 'update'])->name('update')->middleware('auth:api');
+    Route::get('/search', [UserResepController::class, 'search'])->name('search');
     Route::get('/{id}', [UserResepController::class, 'show'])->name('show');
-    Route::delete('/{id}', [UserResepController::class, 'destroy'])->name('destroy');
-    Route::patch('/{id}/restore', [UserResepController::class, 'restore'])->name('restore');
+    Route::delete('/{id}', [UserResepController::class, 'destroy'])->name('destroy')->middleware('auth:api');
+    Route::patch('/{id}/restore', [UserResepController::class, 'restore'])->name('restore')->middleware('auth:api');
 });
 
 
 
-Route::post('/registerUser', [AuthController::class, 'registerUser']);
-Route::post('/loginUser', [AuthController::class, 'loginUser']);
-// Route::post('/registeruser', [userController::class, 'registeruser']);
-// Route::post('/login', [AuthController::class, 'login']);
-// route::post('authController',[authController::class,'AuthController']);
 
-// Route::middleware('auth:sanctum')->group(function () {
-//     Route::get('users', [userController::class, 'index']);
-//     Route::get('users/{id}', [userController::class, 'show']);
-//     Route::put('users/{user}', [userController::class, 'update']);
-// });
-// Route::put('/admin/resep/{id}/approve', [AdminController::class, 'approve'])->middleware('auth:admin');
-// Route::put('/admin/resep/{id}/reject', [AdminController::class, 'reject'])->middleware('auth:admin');
+// Route::post('/registerUser', [AuthController::class, 'registerUser']);
+// Route::post('/loginUser', [AuthController::class, 'loginUser']);
+
+Route::post('register', [UserController::class, 'register']);
+Route::post('registerAdmin', [UserController::class, 'adminRegister']);
+
+Route::middleware('jwt.auth')->group(function () {
+    Route::put('/resipes/{id}/accept', [AdminController::class, 'acceptRecipe']);
+    Route::put('/resipes/{id}/reject', [AdminController::class, 'rejectRecipe']);
+
+});
+
 

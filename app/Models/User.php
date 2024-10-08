@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Database\Factories\UserFactory;
@@ -7,9 +8,10 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-// Tambahkan ini
+class User extends Authenticatable implements JWTSubject
+{
+    use Notifiable, HasApiTokens; // Pastikan untuk menambahkan trait ini
 
-class User extends Authenticatable implements JWTSubject{
     /**
      * The attributes that are mass assignable.
      *
@@ -19,12 +21,13 @@ class User extends Authenticatable implements JWTSubject{
         'name',
         'email',
         'password',
+        'role', // Tambahkan role di sini
     ];
 
-    protected static function factory(){
+    protected static function factory()
+    {
         return UserFactory::new();
     }
-
 
     /**
      * The attributes that should be hidden for serialization.
@@ -41,13 +44,10 @@ class User extends Authenticatable implements JWTSubject{
      *
      * @return array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
@@ -67,4 +67,5 @@ class User extends Authenticatable implements JWTSubject{
     public function getJWTCustomClaims()
     {
         return [];
-    }}
+    }
+}

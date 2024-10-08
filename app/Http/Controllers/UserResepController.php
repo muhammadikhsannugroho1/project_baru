@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResepResource;
-use App\Models\UserResep;
+use App\Models\userResep;
 use App\Models\userresep as ModelsUserresep;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -12,15 +12,15 @@ use Illuminate\Support\Facades\Storage;
 class UserResepController extends Controller
 {
     public function index()
-    {
-        $data = UserResep::orderby('name', 'asc')->get();
-        return response()->json([
-            'status' => true,
-            'message' => 'Data ditemukan',
-            'data' => $data
-            
-        ]);
-    }
+{
+    // Mengambil resep dengan status 'diterima' saja
+    $UserResep = UserResep::where('status', 'diterima')->get();
+
+    return response()->json([
+        'success' => true,
+        'data' => $UserResep
+    ]);
+}
 
     public function store(Request $request)
     {
@@ -148,10 +148,10 @@ class UserResepController extends Controller
         // Jika data tidak ditemukan, kembalikan response dengan data null
         if (!$UserResep) {
             return response()->json([
-                'status' => true,
+                'status' => false,
                 'message' => 'Data tidak ditemukan',
                 'data' => null
-            ], 200); // Menggunakan status code 200 agar tetap sukses dengan data null
+            ], 400); // Menggunakan status code 200 agar tetap sukses dengan data null
         }
     
         // Decode data 'pembuatan' hanya saat membacanya
@@ -189,6 +189,23 @@ public function destroy($id)
     $UserResep->delete();
 
     //return response
-    return new UserResepResource(true, 'Data Post Berhasil Dihapus!', null);
+    return new UserResepResource(true, 'Data resep Berhasil Dihapus!', null);
 }
+    public function search(Request $request)
+    {
+        $query = $request->input('query'); // Ambil parameter query dari request
+    //    
+        // Validasi jika query tidak ada
+        if (!$query) {
+            return response()->json(['success' => false, 'message' => 'Query is required'], 400);
+        }
+
+        // Cari resep berdasarkan nama atau deskripsi
+        $UserResep = userResep::where('name', 'LIKE', "%{$query}%")
+            ->get();
+
+        return response()->json(['success' => true, 'data' => $UserResep]);
+    }
 }
+
+
