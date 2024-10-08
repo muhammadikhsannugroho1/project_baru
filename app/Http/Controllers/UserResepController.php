@@ -12,15 +12,15 @@ use Illuminate\Support\Facades\Storage;
 class UserResepController extends Controller
 {
     public function index()
-    {
-        $data = UserResep::orderby('name', 'asc')->get();
-        return response()->json([
-            'status' => true,
-            'message' => 'Data ditemukan',
-            'data' => $data
-            
-        ]);
-    }
+{
+    // Mengambil resep dengan status 'diterima' saja
+    $UserResep = UserResep::where('status', 'diterima')->get();
+
+    return response()->json([
+        'success' => true,
+        'data' => $UserResep
+    ]);
+}
 
     public function store(Request $request)
     {

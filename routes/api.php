@@ -30,16 +30,16 @@ return response()->json([
 
 Route::group(['prefix' => 'userresep', 'as' => 'api.userresep'], function () {
     Route::get('/', [UserResepController::class, 'index'])->name('index');
-    Route::get('/create', [UserResepController::class, 'create'])->name('create');
-    Route::post('/', [UserResepController::class, 'store'])->name('store');
-    Route::get('/edit/{id}', [UserResepController::class, 'edit'])->name('edit');
-    Route::put('/{id}', [UserResepController::class, 'update'])->name('update');
+    Route::get('/create', [UserResepController::class, 'create'])->name('create')->middleware('auth:api');
+    Route::post('/', [UserResepController::class, 'store'])->name('store')->middleware('auth:api');
+    Route::get('/edit/{id}', [UserResepController::class, 'edit'])->name('edit')->middleware('auth:api');
+    Route::put('/{id}', [UserResepController::class, 'update'])->name('update')->middleware('auth:api');
     Route::get('/search', [UserResepController::class, 'search'])->name('search');
     Route::get('/{id}', [UserResepController::class, 'show'])->name('show');
-    Route::delete('/{id}', [UserResepController::class, 'destroy'])->name('destroy');
-    Route::patch('/{id}/restore', [UserResepController::class, 'restore'])->name('restore');
-   
+    Route::delete('/{id}', [UserResepController::class, 'destroy'])->name('destroy')->middleware('auth:api');
+    Route::patch('/{id}/restore', [UserResepController::class, 'restore'])->name('restore')->middleware('auth:api');
 });
+
 
 
 
