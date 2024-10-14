@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Factories;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
@@ -17,5 +18,9 @@ class userResep extends Model
         return Attribute::make(
             get: fn ($image) => url('/storage/posts/' . $image),
         );
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

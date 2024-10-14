@@ -6,8 +6,10 @@ use App\Http\Resources\UserResepResource;
 use App\Models\userResep;
 use App\Models\userresep as ModelsUserresep;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+
 
 class UserResepController extends Controller
 {
@@ -22,53 +24,58 @@ class UserResepController extends Controller
     ]);
 }
 
-    public function store(Request $request)
-    {
-        // Validasi data input
-        $validator = Validator::make($request->all(), [
-            'image'     => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'name'      => 'required|string|max:255',
-            'deskripsi'  => 'required|string|max:255',
-            'bahan'     => 'required|array',
-            'pembuatan' => 'required|array',
-            'kategori'  => 'required|in:makanan,minuman',
-        ]);
-    
-        // Cek apakah validasi gagal
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Proses validasi gagal',
-                'errors' => $validator->errors()
-            ], 400);
-        }
-    
-        // Membuat instance baru dari model UserResep
-        $UserResep = new UserResep();
-        $image = $request->file('image');
-    
-        // Simpan gambar dan ambil nama file
-        $imagePath = $image->storeAs('public/UserResep', $image->hashName());
-        $UserResep->image = basename($imagePath);
-    
-        // Set data lainnya
-        $UserResep->name = $request->input('name');
-        $UserResep->deskripsi = $request->input('deskripsi');
-        $UserResep->bahan = json_encode($request->input('bahan')); // Mengonversi array ke JSON
-        $UserResep->pembuatan = json_encode($request->input('pembuatan')); // Mengonversi array ke JSON
-        $UserResep->kategori = $request->input('kategori');
-        $UserResep->status = 'diproses';
-    
-        // Menyimpan data ke database
-        $UserResep->save();
-    
-        // Mengembalikan response setelah data disimpan
+public function store(Request $request)
+{
+    // Validasi data input
+    $validator = Validator::make($request->all(), [
+        'image'     => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        'name'      => 'required|string|max:255',
+        'deskripsi'  => 'required|string|max:255',
+        'bahan'     => 'required|array',
+        'pembuatan' => 'required|array',
+        'kategori'  => 'required|in:makanan,minuman',
+    ]);
+
+    // Cek apakah validasi gagal
+    if ($validator->fails()) {
         return response()->json([
-            'status' => true,
-            'message' => 'Data berhasil disimpan',
-            'data' => $UserResep
-        ], 201);
+            'status' => false,
+            'message' => 'Proses validasi gagal',
+            'errors' => $validator->errors()
+        ], 400);
     }
+
+    // Membuat instance baru dari model UserResep
+    $UserResep = new UserResep();
+    $image = $request->file('image');
+
+    // Simpan gambar dan ambil nama file
+    $imagePath = $image->storeAs('public/UserResep', $image->hashName());
+    $UserResep->image = basename($imagePath);
+
+    // Set data lainnya
+    $UserResep->name = $request->input('name');
+    $UserResep->deskripsi = $request->input('deskripsi');
+    $UserResep->bahan = json_encode($request->input('bahan')); // Mengonversi array ke JSON
+    $UserResep->pembuatan = json_encode($request->input('pembuatan')); // Mengonversi array ke JSON
+    $UserResep->kategori = $request->input('kategori');
+    $UserResep->status = 'diproses';
+
+    // Mendapatkan ID pengguna yang sedang login
+    $user = Auth::user();
+    $UserResep->user_id = $user->id; // Menetapkan user_id ke resep
+
+    // Menyimpan data ke database
+    $UserResep->save();
+
+    // Mengembalikan response setelah data disimpan
+    return response()->json([
+        'status' => true,
+        'message' => 'Data berhasil disimpan',
+        'data' => $UserResep
+    ], 201);
+}
+
     
 
     public function update(Request $request, $id)
@@ -175,9 +182,9 @@ class UserResepController extends Controller
     }
     
 
-//untuk menghapus
-public function destroy($id)
-{
+    //untuk menghapus
+    public function destroy($id)
+    {
 
     //find post by ID
     $UserResep = Userresep::find($id);
@@ -190,7 +197,9 @@ public function destroy($id)
 
     //return response
     return new UserResepResource(true, 'Data resep Berhasil Dihapus!', null);
-}
+    }
+
+    //untuk mencari/search resep makanan
     public function search(Request $request)
     {
         $query = $request->input('query'); // Ambil parameter query dari request
@@ -205,6 +214,28 @@ public function destroy($id)
             ->get();
 
         return response()->json(['success' => true, 'data' => $UserResep]);
+    }
+
+
+    //untuk user melihat resep nya sendiri/untuk cek status diterima/ditolak
+    public function resepSaya(Request $request)
+    {
+        // Mendapatkan pengguna yang sedang login
+        $user = Auth::user();
+    
+        // Mengambil resep yang dibuat oleh pengguna tersebut
+        $resepSaya = UserResep::where('user_id', $user->id)->get();
+      // Cek apakah ada resep
+      if ($resepSaya->isEmpty()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Data tidak ditemukan'
+        ], 404);
+    }
+        return response()->json([
+            'success' => true,
+            'data' => $resepSaya
+        ]);
     }
 }
 

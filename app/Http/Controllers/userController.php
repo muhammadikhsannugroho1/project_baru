@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -53,5 +54,29 @@ class UserController extends ApiBaseController
 
         return $this->sendResponse($admin, 'Admin registered successfully!');
     }
+
+    public function profile()
+    {
+        // Mendapatkan user yang sedang login berdasarkan token JWT
+        $user = Auth::user();
     
-}
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User tidak ditemukan atau belum login',
+            ], 401);
+        }
+    
+        return response()->json([
+            'success' => true,
+            'message' => 'User profile data',
+            'data' => [
+                'name' => $user->name,
+                'email' => $user->email,
+            ],
+        ]);
+    }
+    }
+    
+
+
