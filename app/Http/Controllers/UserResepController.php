@@ -16,7 +16,9 @@ class UserResepController extends Controller
     public function index()
 {
     // Mengambil resep dengan status 'diterima' saja
-    $UserResep = UserResep::where('status', 'diterima')->get();
+    $UserResep = UserResep::where('status', 'diterima')
+    ->select('id','name','image','kategori')
+    ->get();
 
     return response()->json([
         'success' => true,
@@ -184,20 +186,32 @@ public function store(Request $request)
 
     //untuk menghapus
     public function destroy($id)
-    {
+{
+    $user = Auth::user();
 
-    //find post by ID
-    $UserResep = Userresep::find($id);
+    // Mencari resep berdasarkan ID
+    $UserResep = UserResep::where('id', $id)->where('user_id', $user->id)->first();
 
-    //delete image
-    Storage::delete('public/resep/'.basename($UserResep->image));
+    if (!$UserResep) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Resep tidak ditemukan atau Anda tidak memiliki hak untuk menghapus resep ini.'
+        ], 404);
+    }
 
-    //delete resep makanan
+    // Hapus gambar jika ada
+    Storage::delete('public/resep/' . basename($UserResep->image));
+
+    // Hapus resep
     $UserResep->delete();
 
-    //return response
-    return new UserResepResource(true, 'Data resep Berhasil Dihapus!', null);
-    }
+    return response()->json([
+        'status' => true,
+        'message' => 'Data resep berhasil dihapus!'
+    ]);
+}
+
+    
 
     //untuk mencari/search resep makanan
     public function search(Request $request)
@@ -218,7 +232,7 @@ public function store(Request $request)
 
 
     //untuk user melihat resep nya sendiri/untuk cek status diterima/ditolak
-    public function resepSaya(Request $request)
+    public function showresepSaya(Request $request)
     {
         // Mendapatkan pengguna yang sedang login
         $user = Auth::user();
@@ -237,6 +251,56 @@ public function store(Request $request)
             'data' => $resepSaya
         ]);
     }
+    public function filterkategori(Request $request)
+    {
+        // Mendapatkan kategori dari input
+        $kategori = $request->input('kategori');
+    
+        // Mengambil resep berdasarkan kategori dan status
+        $UserResep = UserResep::where('kategori', $kategori)
+            ->where('status', 'diterima')
+            ->get(['name','image','kategori']);
+    
+        // Cek apakah resep ditemukan
+        if ($UserResep->isEmpty()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data tidak ditemukan',
+                'data' => []
+            ], 404);
+        }
+    
+        return response()->json([
+            'status' => true,
+            'message' => 'Data berhasil ditemukan',
+            'data' => $UserResep
+        ]);
+    }
+    public function tampilanresepSaya(Request $request)
+{
+    // Mendapatkan pengguna yang sedang login
+    $User = Auth::user();
+
+    // Mengambil resep yang dibuat oleh pengguna tersebut, hanya mengambil field yang dibutuhkan
+    $resepSaya = UserResep::where('user_id', $User->id)
+                          ->select('id', 'name', 'image', 'kategori') // Hanya ambil kolom name, image, kategori, dan id untuk detail
+                          ->get();
+
+    // Cek apakah ada resep
+    if ($resepSaya->isEmpty()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Data tidak ditemukan'
+        ], 404);
+    }
+
+    return response()->json([
+        'success' => true,
+        'data' => $resepSaya
+    ]);
+}
+    
+    
 }
 
 
