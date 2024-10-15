@@ -26,6 +26,7 @@ nav,ul{
     display: flex;
     margin: 12px;
     padding: 6px;
+    border-radius: 5%;
     background-color: #F5EFF7;
     transition: all .5s ease 0s;
 }
@@ -67,22 +68,44 @@ a{
     transform: rotate(10deg);
 }
 
-/* gambar home */
-.image-container img {
-    padding: 15px;
-    float: left;
+/* Container search bar */
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
-    max-width: 472px; 
-    height: 377px; 
-    border-radius: 10px;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
-/* text home */
-.image-container p{
-    margin-top: 26px;
-    margin-left: 10px;
-    font-size: 20px;
-    max-width: 94%;
-    vertical-align: super;
-    text-align: center;
+/* Input search */
+.search-input {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 25px 0 0 25px;
+    outline: none;
+    font-size: 16px;
+}
+
+/* Tombol search */
+.search-btn {
+    padding: 10px 20px;
+    border: none;
+    background-color:#F5EFF7;
+    color: black;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 0 25px 25px 0;
+    transition: background-color 0.3s;
+}
+
+.search-btn:hover {
+    background-color: rgb(255, 0, 238);
+}
+
+/* Untuk form agar tampil responsif */
+form {
+    width: 100%;
+    display: flex;
 }
