@@ -1,0 +1,90 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 30px;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    width: 80%;
+    max-width: 900px;
+    background-color: #CBBFBF;
+    padding: 55px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.left-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.recipe-image {
+    width: 250px;
+    height: auto;
+    margin-bottom: 20px;
+    border-radius: 10px;
+}
+
+.right-column {
+    flex: 2;
+    margin-left: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    resize: none;
+}
+
+input[type="file"] {
+    margin-top: 10px;
+}
+
+textarea {
+    height: 100px;
+}
+
+button.submit-button {
+    padding: 10px 15px;
+    background-color: #ffff;
+    color: red;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button.submit-button:hover {
+    background-color: rebeccapurple;
+}
