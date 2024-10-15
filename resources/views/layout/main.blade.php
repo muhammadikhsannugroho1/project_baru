@@ -10,19 +10,29 @@
 <body>
     <header>
             <img src="{{ asset("asset/img/Dapur_Ihsan-removebg-preview.png") }}"></h1>
+        {{-- nav --}}
         <nav>
-            <ul><a href="/dashboard">HOME</a></ul>
-            <ul><a href="/daftar">DAFTAR MAKANAN</a></ul>
-            <ul><a href="#">UPLODE RESEP MU </a></ul>
-            <ul><a href="#">KATEGORI </a></ul>
+            <ul><a href="{{route("dasboard")}}">HOME</a></ul>
+            <ul><a href="{{ route("uplode") }}">UPLODE RESEP MU </a></ul>
+            <ul><a href="{{ route("kategori") }}">KATEGORI </a></ul>
         </nav>
-
+        {{-- prifil --}}
         <button class="btn">
-            <a href="/login">
+            <a href={{route("login") }}>
                 <img  src="{{ asset("asset/img/png-transparent-computer-icons-user-profile-circle-abstract-miscellaneous-rim-account-thumbnail-removebg-preview.png") }}">
             </a>
         </button>
     </header>
-    @yield('content')    
+    @yield('content')  
+    
+    <body>
+        <div class="search-container">
+            <form action="/search" method="GET">
+                <input type="text" placeholder="Search.." name="search" class="search-input">
+                <button type="submit" class="search-btn">Search</button>
+            </form>
+        </div>
+    </body>
+    
 </body>
 </html>
