@@ -283,7 +283,7 @@ public function store(Request $request)
 
     // Mengambil resep yang dibuat oleh pengguna tersebut, hanya mengambil field yang dibutuhkan
     $resepSaya = UserResep::where('user_id', $User->id)
-                          ->select('id', 'name', 'image', 'kategori') // Hanya ambil kolom name, image, kategori, dan id untuk detail
+                          ->select('id', 'name', 'image') // Hanya ambil kolom name, image, kategori, dan id untuk detail
                           ->get();
 
     // Cek apakah ada resep
