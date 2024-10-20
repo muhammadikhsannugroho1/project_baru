@@ -52,8 +52,9 @@ public function store(Request $request)
     $image = $request->file('image');
 
     // Simpan gambar dan ambil nama file
-    $imagePath = $image->storeAs('public/UserResep', $image->hashName());
-    $UserResep->image = basename($imagePath);
+    $imagePath = $image->storeAs('posts', $image->hashName(), 'public'); 
+    $UserResep->image = $image->hashName(); // Simpan hanya nama filenya saja
+    
 
     // Set data lainnya
     $UserResep->name = $request->input('name');
@@ -77,6 +78,7 @@ public function store(Request $request)
         'data' => $UserResep
     ], 201);
 }
+
 
     
 
