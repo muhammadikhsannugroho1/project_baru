@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\adminController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\authController;
 use App\Http\Controllers\kategoriController;
 use App\Http\Controllers\userController;
@@ -9,49 +9,54 @@ use Illuminate\Container\Attributes\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-
 Route::get('/',function(){
-return response()->json([
-    'status' =>false,
-    'message'=>'akses tidak di perbolehkan'
-],400);
+    return response()->json([
+        'status' => false,
+        'message' => 'Akses tidak di perbolehkan'
+    ], 400);
 });
 
+// Route untuk akses gambar tanpa middleware autentikasi
+Route::get('/storage/posts/{filename}', function ($filename) {
+    $path = storage_path('app/public/posts/' . $filename);
 
+    if (!file_exists($path)) {
+        abort(404);
+    }
 
+    return response()->file($path);
+})->name('image.show');
 
-
-
-
+// untuk resep
 Route::group(['prefix' => 'userresep', 'as' => 'api.userresep'], function () {
-    Route::get('/', [UserResepController::class, 'index'])->name('index')->middleware('auth.sanctum');
-    Route::get('/create', [UserResepController::class, 'create'])->name('create');
-    Route::post('/', [UserResepController::class, 'store'])->name('store');
-    Route::get('/edit/{id}', [UserResepController::class, 'edit'])->name('edit');
-    Route::put('/{id}', [UserResepController::class, 'update'])->name('update');
+    Route::get('/', [UserResepController::class, 'index'])->name('index');
+    Route::get('/create', [UserResepController::class, 'create'])->name('create')->middleware('auth:api');
+    Route::get('/filterkategori', [UserResepController::class, 'filterkategori'])->name('filterkategori');
+    Route::post('/', [UserResepController::class, 'store'])->name('store')->middleware('auth:api');
+    Route::get('/resep-saya', [UserResepController::class, 'showresepSaya'])->name('resepSaya')->middleware('auth:api');
+    Route::get('/edit/{id}', [UserResepController::class, 'edit'])->name('edit')->middleware('auth:api');
+    Route::put('/{id}', [UserResepController::class, 'update'])->name('update')->middleware('auth:api');
+    Route::get('/resepsaya/tampilan', [UserResepController::class, 'tampilanresepsaya'])->middleware('auth:api');
+    Route::get('/search', [UserResepController::class, 'search'])->name('search');
     Route::get('/{id}', [UserResepController::class, 'show'])->name('show');
-    Route::delete('/{id}', [UserResepController::class, 'destroy'])->name('destroy');
-    Route::patch('/{id}/restore', [UserResepController::class, 'restore'])->name('restore');
+    Route::get('/kategori/{kategori}', [UserResepController::class, 'filterkategori'])->name('filterkategori');
+    Route::delete('/{id}', [UserResepController::class, 'destroy'])->name('destroy')->middleware('auth:api');
+    Route::patch('/{id}/restore', [UserResepController::class, 'restore'])->name('restore')->middleware('auth:api');
 });
 
+// untuk register admin/user
+Route::post('register', [UserController::class, 'register']);
+Route::post('registerAdmin', [UserController::class, 'adminRegister']);
 
+// untuk melihat profile
+Route::middleware(['auth:api'])->get('/profile', [UserController::class, 'profile']);
 
-Route::post('/registerUser', [AuthController::class, 'registerUser']);
-Route::post('/loginUser', [AuthController::class, 'loginUser']);
-// Route::post('/registeruser', [userController::class, 'registeruser']);
-// Route::post('/login', [AuthController::class, 'login']);
-// route::post('authController',[authController::class,'AuthController']);
-
-// Route::middleware('auth:sanctum')->group(function () {
-//     Route::get('users', [userController::class, 'index']);
-//     Route::get('users/{id}', [userController::class, 'show']);
-//     Route::put('users/{user}', [userController::class, 'update']);
-// });
-// Route::put('/admin/resep/{id}/approve', [AdminController::class, 'approve'])->middleware('auth:admin');
-// Route::put('/admin/resep/{id}/reject', [AdminController::class, 'reject'])->middleware('auth:admin');
-
+// untuk si admin memproses ditolak/diterima
+Route::middleware('jwt.auth')->group(function () {
+    Route::put('/resipes/{id}/accept', [AdminController::class, 'acceptRecipe']);
+    Route::put('/resipes/{id}/reject', [AdminController::class, 'rejectRecipe']);
+});

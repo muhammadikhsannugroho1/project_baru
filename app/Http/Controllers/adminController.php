@@ -1,58 +1,58 @@
 <?php
+
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Models\UserResep;
+use App\Models\UserResep; // Pastikan Anda menggunakan model yang benar
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; // Import Facade Auth
+
 class AdminController extends Controller
 {
-    // Mengambil semua pengguna
-   public function index()
-{
-    // $this->authorize('viewAny', User::class);
-    return response()->json(User::all(), 200);
-}
-
-
-    // Menghapus pengguna
-    public function destroy(User $user)
+    public function acceptRecipe($id)
     {
-        // $this->authorize('delete', $user);
-        $user->delete();
-        return response()->json(['message' => 'User deleted successfully'], 200);
+        // Mendapatkan pengguna yang sedang login
+        $user = Auth::user();
+
+        // Cek apakah user adalah admin
+        if ($user->role !== 'admin') {
+            return response()->json(['status' => false, 'message' => 'Unauthorized, only admin can access this route.'], 403);
+        }
+
+        // Mencari resep berdasarkan ID
+        $recipe = UserResep::find($id);
+
+        if (!$recipe) {
+            return response()->json(['status' => false, 'message' => 'Resep tidak ditemukan'], 404);
+        }
+
+        // Mengubah status menjadi 'diterima'
+        $recipe->status = 'diterima';
+        $recipe->save();
+
+        return response()->json(['status' => true, 'message' => 'Resep diterima', 'data' => $recipe]);
     }
 
-    // Fungsi untuk menyetujui resep
-    public function approve($id)
+    public function rejectRecipe($id)
     {
-        // Temukan resep berdasarkan ID
-        $UserResep = UserResep::findOrFail($id);
+        // Mendapatkan pengguna yang sedang login
+        $user = Auth::user();
 
-        // Ubah status menjadi diterima
-        $UserResep->status = 'diterima';
-        $UserResep->save();
+        // Cek apakah user adalah admin
+        if ($user->role !== 'admin') {
+            return response()->json(['status' => false, 'message' => 'Unauthorized, only admin can access this route.'], 403);
+        }
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Resep berhasil diterima',
-            'data' => $UserResep
-        ], 200);
-    }
+        // Mencari resep berdasarkan ID
+        $recipe = UserResep::find($id);
 
-    // Fungsi untuk menolak resep
-    public function reject($id)
-    {
-        // Temukan resep berdasarkan ID
-        $UserResep = UserResep::findOrFail($id);
+        if (!$recipe) {
+            return response()->json(['status' => false, 'message' => 'Resep tidak ditemukan'], 404);
+        }
 
-        // Ubah status menjadi ditolak
-        $UserResep->status = 'ditolak';
-        $UserResep->save();
+        // Mengubah status menjadi 'ditolak'
+        $recipe->status = 'ditolak';
+        $recipe->save();
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Resep berhasil ditolak',
-            'data' => $UserResep
-        ], 200);
+        return response()->json(['status' => true, 'message' => 'Resep ditolak', 'data' => $recipe]);
     }
 }
-
