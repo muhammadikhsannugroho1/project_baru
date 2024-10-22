@@ -64,6 +64,8 @@ public function store(Request $request)
     $UserResep->kategori = $request->input('kategori');
     $UserResep->status = 'diproses';
 
+    
+
     // Mendapatkan ID pengguna yang sedang login
     $user = Auth::user();
     $UserResep->user_id = $user->id; // Menetapkan user_id ke resep
@@ -167,7 +169,8 @@ public function store(Request $request)
     
         // Decode data 'pembuatan' hanya saat membacanya
         $pembuatan = json_decode($UserResep->pembuatan, true);
-        $alat = json_decode($UserResep->alat, true);
+       
+        $bahan = json_decode($UserResep->bahan, true);
         // Mengembalikan data yang ditemukan
         return response()->json([
             'status' => true,
@@ -175,8 +178,7 @@ public function store(Request $request)
             'data' => [
                 'id' => $UserResep->id,
                 'name' => $UserResep->name,
-                'alat' => $alat,
-                'bahan' => $UserResep->bahan,
+                'bahan' => $bahan,
                 'pembuatan' => $pembuatan, // hasil sudah dalam bentuk array
                 'kategori' => $UserResep->kategori,
                 'status' => $UserResep->status,
