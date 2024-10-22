@@ -1,15 +1,39 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
 }
 
-.container {
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f9f9f9;
+}
+
+.image-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 30px;
+    gap: 10px;
+}
+
+.image-container img {
+    width: 250px;
+    height: auto;
+    border-radius: 10px;
+}
+
+#imageUpload {
+    padding: 10px;
+    cursor: pointer;
+}
+
+
+.container {
+    width: 80%;
 }
 
 h2 {
@@ -17,74 +41,52 @@ h2 {
     margin-bottom: 20px;
 }
 
-form {
+.form-container {
     display: flex;
-    width: 80%;
-    max-width: 900px;
-    background-color: #CBBFBF;
-    padding: 55px;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    gap: 20px;
 }
 
-.left-column {
-    flex: 1;
+.image-container img {
+    width: 300px;
+    height: auto;
+    border-radius: 10px;
+}
+
+.form {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    flex: 1;
+    gap: 15px;
 }
 
-.recipe-image {
-    width: 250px;
-    height: auto;
-    margin-bottom: 20px;
-    border-radius: 10px;
+.input-group {
+    display: flex;
+    gap: 15px;
 }
 
-.right-column {
-    flex: 2;
-    margin-left: 20px;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #333;
-}
-
-input[type="text"],
-textarea {
+input[type="text"], textarea {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 14px;
-    resize: none;
+    background-color: #F5EFF7;
 }
 
-input[type="file"] {
-    margin-top: 10px;
-}
-
-textarea {
-    height: 100px;
-}
-
-button.submit-button {
-    padding: 10px 15px;
-    background-color: #ffff;
-    color: red;
+button {
+    padding: 10px;
+    background-color: #F5EFF7;
     border: none;
-    border-radius: 5px;
-    font-size: 16px;
     cursor: pointer;
+    border-radius: 5px;
 }
 
-button.submit-button:hover {
-    background-color: rebeccapurple;
+button:hover {
+    background-color: #ebbbfb;
+}
+
+.submit-btn {
+    align-self: flex-start;
+    padding: 10px 20px;
+    background-color: #F5EFF7;
+    color: black;
 }
