@@ -8,41 +8,81 @@
     <link rel="stylesheet" href="{{ asset ("asset/css/unggah.css") }}">
 </head>
 <body>
-    <div class="container">
-        <h2>Upload Resepmu Yu</h2>
-        <form action="/upload" method="POST" enctype="multipart/form-data">
-            <div class="left-column">
-                <img src="https://via.placeholder.com/250" alt="Gambar Resep" class="recipe-image">
-                <input type="file" id="image" name="image" accept="image/*" required>
-            </div>
-            <div class="right-column">
-                <div class="form-group">
-                    <label for="title">Judul</label>
-                    <input type="text" id="title" name="title" placeholder="Judul Resep" required>
-                    
-                    <label for="category">Kategori</label>
-                    <input type="text" id="category" name="category" placeholder="Kategori Resep" required>
+    <body>
+        <div class="container">
+            <h2>UPLOAD RESEPMU YU</h2>
+    
+            <!-- Form Upload Resep -->
+            <form action="{{ route('store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="form-container">
+                    <!-- Kiri: Upload Gambar -->
+                    <div class="image-container">
+                        <img id="imagePreview" src="https://via.placeholder.com/250" alt="Resep Image">
+                        <input type="file" id="imageUpload" name="image" accept="image/*">
+                    </div>
+    
+                    <!-- Kanan: Formulir -->
+                    <div class="form">
+                        <!-- Input Judul dan Kategori -->
+                        <div class="input-group">
+                            <input type="text" name="judul" placeholder="JUDUL" required>
+                            <input type="text" name="kategori" placeholder="KATEGORI" required>
+                        </div>
+    
+                        <!-- Input Bahan -->
+                        <div id="bahan-container">
+                            <div class="input-group">
+                                <textarea name="bahan[]" placeholder="BAHAN" id="bahan-1" required></textarea>
+                            </div>
+                        </div>
+                        <button id="tambahBahan" type="button">+BAHAN</button>
+    
+                        <!-- Input Cara Buat -->
+                        <div id="cara-container">
+                            <div class="input-group">
+                                <textarea name="cara[]" placeholder="CARA BUAT" id="cara-1" required></textarea>
+                            </div>
+                        </div>
+                        <button id="tambahCara" type="button">+CARA BUAT</button>
+    
+                        <!-- Input Deskripsi -->
+                        <div class="input-group">
+                            <textarea name="deskripsi" placeholder="DESKRIPSI" required></textarea>
+                        </div>
+    
+                        <!-- Tombol Simpan -->
+                        <button type="submit" class="submit-btn">SIMPAN</button>
+                    </div>
                 </div>
-                
-                <div class="form-group">
-                    <label for="ingredients">Bahan</label>
-                    <textarea id="ingredients" name="ingredients" rows="5" placeholder="Bahan-bahan" required></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label for="description">Deskripsi</label>
-                    <textarea id="description" name="description" rows="5" placeholder="Deskripsi Resep" required></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label for="instructions">Cara Buat</label>
-                    <textarea id="instructions" name="instructions" rows="6" placeholder="Cara Membuat" required></textarea>
-                </div>
-                
-                <button type="submit" class="submit-button">Simpan</button>
-            </div>
-        </form>
-    </div>
+            </form>
+        </div>
+    
+    
+        
+        <script>
+            document.getElementById('tambahBahan').addEventListener('click', function() {
+                event.preventDefault();
+         // Membuat elemen textarea baru untuk bahan
+            const bahanSection = document.createElement('textarea');
+            bahanSection.setAttribute('placeholder', 'BAHAN');
+
+        // Menambahkan elemen baru sebelum tombol tambah bahan
+            const form = document.querySelector('.form');
+            form.insertBefore(bahanSection, document.getElementById('tambahBahan'));
+            });
+
+
+            document.getElementById('tambahCara').addEventListener('click', function() {
+            // Membuat elemen textarea baru untuk cara buat
+            const caraSection = document.createElement('textarea');
+            caraSection.setAttribute('placeholder', 'CARA BUAT');
+
+            // Menambahkan elemen baru sebelum tombol tambah cara
+            const form = document.querySelector('.form');
+            form.insertBefore(caraSection, document.getElementById('tambahCara'));
+            });
+        </script>
 </body>
 </html>
 
