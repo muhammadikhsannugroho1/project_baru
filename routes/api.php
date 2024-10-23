@@ -5,9 +5,11 @@ use App\Http\Controllers\authController;
 use App\Http\Controllers\kategoriController;
 use App\Http\Controllers\userController;
 use App\Http\Controllers\UserResepController;
+use App\Http\Middleware\CheckAuth;
 use Illuminate\Container\Attributes\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -36,7 +38,7 @@ Route::group(['prefix' => 'userresep', 'as' => 'api.userresep'], function () {
     Route::get('/', [UserResepController::class, 'index'])->name('index');
     Route::get('/create', [UserResepController::class, 'create'])->name('create')->middleware('auth:api');
     Route::get('/filterkategori', [UserResepController::class, 'filterkategori'])->name('filterkategori');
-    Route::post('/', [UserResepController::class, 'store'])->name('store')->middleware('auth:api');
+    // Route::post('/', [UserResepController::class, 'store'])->name('store')->middleware(['auth:api']);
     Route::get('/resep-saya', [UserResepController::class, 'showresepSaya'])->name('resepSaya')->middleware('auth:api');
     Route::get('/edit/{id}', [UserResepController::class, 'edit'])->name('edit')->middleware('auth:api');
     Route::put('/{id}', [UserResepController::class, 'update'])->name('update')->middleware('auth:api');
@@ -48,12 +50,18 @@ Route::group(['prefix' => 'userresep', 'as' => 'api.userresep'], function () {
     Route::patch('/{id}/restore', [UserResepController::class, 'restore'])->name('restore')->middleware('auth:api');
 });
 
+Route::group(['middleware' => [CheckAuth::class]], function () {
+    Route::post('/userresep', [UserResepController::class, 'store']);
+    Route::get('/profile', [UserController::class, 'profile']);
+});
+
+
 // untuk register admin/user
 Route::post('register', [UserController::class, 'register']);
 Route::post('registerAdmin', [UserController::class, 'adminRegister']);
 
 // untuk melihat profile
-Route::middleware(['auth:api'])->get('/profile', [UserController::class, 'profile']);
+
 
 // untuk si admin memproses ditolak/diterima
 Route::middleware('jwt.auth')->group(function () {

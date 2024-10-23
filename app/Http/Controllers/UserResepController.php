@@ -28,6 +28,16 @@ class UserResepController extends Controller
 
 public function store(Request $request)
 {
+    // Cek apakah pengguna sudah login
+    if (!Auth::check()) {
+        return response()->json([
+            'success' => false,
+            'code' => 'S01',
+            'message' => 'perlu login',
+            'data' => null
+        ], 401);
+    }
+
     // Validasi data input
     $validator = Validator::make($request->all(), [
         'image'     => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -54,7 +64,6 @@ public function store(Request $request)
     // Simpan gambar dan ambil nama file
     $imagePath = $image->storeAs('posts', $image->hashName(), 'public'); 
     $UserResep->image = $image->hashName(); // Simpan hanya nama filenya saja
-    
 
     // Set data lainnya
     $UserResep->name = $request->input('name');
@@ -63,8 +72,6 @@ public function store(Request $request)
     $UserResep->pembuatan = json_encode($request->input('pembuatan')); // Mengonversi array ke JSON
     $UserResep->kategori = $request->input('kategori');
     $UserResep->status = 'diproses';
-
-    
 
     // Mendapatkan ID pengguna yang sedang login
     $user = Auth::user();
@@ -80,6 +87,8 @@ public function store(Request $request)
         'data' => $UserResep
     ], 201);
 }
+
+
 
 
     
