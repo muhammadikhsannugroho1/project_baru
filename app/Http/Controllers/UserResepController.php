@@ -236,9 +236,10 @@ public function store(Request $request)
             return response()->json(['success' => false, 'message' => 'Query is required'], 400);
         }
 
-        // Cari resep berdasarkan nama atau deskripsi
-        $UserResep = userResep::where('name', 'LIKE', "%{$query}%")
-            ->get();
+       
+    $UserResep = userResep::where('status', 'diterima')
+    ->where('name', 'LIKE', "%{$query}%")  
+    ->get();
 
         return response()->json(['success' => true, 'data' => $UserResep]);
     }
