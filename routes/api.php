@@ -38,11 +38,9 @@ Route::group(['prefix' => 'userresep', 'as' => 'api.userresep'], function () {
     Route::get('/', [UserResepController::class, 'index'])->name('index');
     Route::get('/create', [UserResepController::class, 'create'])->name('create')->middleware('auth:api');
     Route::get('/filterkategori', [UserResepController::class, 'filterkategori'])->name('filterkategori');
-    // Route::post('/', [UserResepController::class, 'store'])->name('store')->middleware(['auth:api']);
-    Route::get('/resep-saya', [UserResepController::class, 'showresepSaya'])->name('resepSaya')->middleware('auth:api');
+
     Route::get('/edit/{id}', [UserResepController::class, 'edit'])->name('edit')->middleware('auth:api');
     Route::put('/{id}', [UserResepController::class, 'update'])->name('update')->middleware('auth:api');
-    Route::get('/resepsaya/tampilan', [UserResepController::class, 'tampilanresepsaya'])->middleware('auth:api');
     Route::get('/search', [UserResepController::class, 'search'])->name('search');
     Route::get('/{id}', [UserResepController::class, 'show'])->name('show');
     Route::get('/kategori/{kategori}', [UserResepController::class, 'filterkategori'])->name('filterkategori');
@@ -53,6 +51,8 @@ Route::group(['prefix' => 'userresep', 'as' => 'api.userresep'], function () {
 Route::group(['middleware' => [CheckAuth::class]], function () {
     Route::post('/userresep', [UserResepController::class, 'store']);
     Route::get('/profile', [UserController::class, 'profile']);
+    Route::get('/resepsaya/tampilan', [UserResepController::class, 'tampilanresepsaya']);
+    Route::get('/resepsaya/show', [UserResepController::class, 'showresepSaya']);
 });
 
 
