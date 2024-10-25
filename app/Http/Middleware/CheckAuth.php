@@ -16,15 +16,24 @@ class CheckAuth
         // Cek apakah token ada dan valid
         try {
             if (! $user = JWTAuth::parseToken()->authenticate()) {
-                return response()->json(['success' => false, 'message' => 'anda Perlu login'], 401);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'anda perlu login',
+                    'data' => null // Menambahkan 'data' dengan nilai null
+                ], 401); // Kode status 401 Unauthorized
             }
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'anda perlu login'], 401);
+            return response()->json([
+                'success' => false,
+                'message' => 'anda perlu login',
+                'data' => null // Menambahkan 'data' dengan nilai null
+            ], 401); // Kode status 401 Unauthorized
         }
 
         return $next($request);
     }
 }
+
 // Kenapa harus ada dua respon yang sama di if dan catch?
 
 // Respon yang sama muncul di dua tempat (if dan catch) karena ada dua skenario di mana pengecekan token bisa gagal:
