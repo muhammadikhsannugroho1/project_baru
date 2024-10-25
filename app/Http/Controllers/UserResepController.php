@@ -54,7 +54,7 @@ public function store(Request $request)
             'status' => false,
             'message' => 'Proses validasi gagal',
             'errors' => $validator->errors()
-        ], 400);
+        ], 401);
     }
 
     // Membuat instance baru dari model UserResep
@@ -111,7 +111,7 @@ public function store(Request $request)
                 'status' => false,
                 'message' => 'Proses validasi gagal',
                 'errors' => $validator->errors()
-            ], 400);
+            ], 401);
         }
     
         // Cari UserResep berdasarkan ID
@@ -161,7 +161,7 @@ public function store(Request $request)
                 'status' => false,
                 'message' => 'ID tidak valid',
                 'errors' => $validator->errors()
-            ], 400);
+            ], 401);
         }
     
         // Cari UserResep berdasarkan ID
@@ -173,7 +173,7 @@ public function store(Request $request)
                 'status' => false,
                 'message' => 'Data tidak ditemukan',
                 'data' => null
-            ], 400); // Menggunakan status code 200 agar tetap sukses dengan data null
+            ], 401); // Menggunakan status code 200 agar tetap sukses dengan data null
         }
     
         // Decode data 'pembuatan' hanya saat membacanya
@@ -209,7 +209,7 @@ public function store(Request $request)
         return response()->json([
             'status' => false,
             'message' => 'Resep tidak ditemukan atau Anda tidak memiliki hak untuk menghapus resep ini.'
-        ], 404);
+        ], 401);
     }
 
     // Hapus gambar jika ada
@@ -305,7 +305,7 @@ public function store(Request $request)
         return response()->json([
             'success' => false,
             'message' => 'Data tidak ditemukan'
-        ], 404);
+        ], 401);
     }
 
     return response()->json([
