@@ -38,7 +38,6 @@ Route::group(['prefix' => 'userresep', 'as' => 'api.userresep'], function () {
     Route::get('/', [UserResepController::class, 'index'])->name('index');
     Route::get('/create', [UserResepController::class, 'create'])->name('create')->middleware('auth:api');
     Route::get('/filterkategori', [UserResepController::class, 'filterkategori'])->name('filterkategori');
-
     Route::get('/edit/{id}', [UserResepController::class, 'edit'])->name('edit')->middleware('auth:api');
     Route::put('/{id}', [UserResepController::class, 'update'])->name('update')->middleware('auth:api');
     Route::get('/search', [UserResepController::class, 'search'])->name('search');
@@ -53,6 +52,8 @@ Route::group(['middleware' => [CheckAuth::class]], function () {
     Route::get('/profile', [UserController::class, 'profile']);
     Route::get('/resepsaya/tampilan', [UserResepController::class, 'tampilanresepsaya']);
     Route::get('/resepsaya/show', [UserResepController::class, 'showresepSaya']);
+    Route::put('/resipes/{id}/accept', [AdminController::class, 'acceptRecipe']);
+    Route::put('/resipes/{id}/reject', [AdminController::class, 'rejectRecipe']);
 });
 
 
@@ -65,6 +66,5 @@ Route::post('registerAdmin', [UserController::class, 'adminRegister']);
 
 // untuk si admin memproses ditolak/diterima
 Route::middleware('jwt.auth')->group(function () {
-    Route::put('/resipes/{id}/accept', [AdminController::class, 'acceptRecipe']);
-    Route::put('/resipes/{id}/reject', [AdminController::class, 'rejectRecipe']);
+  
 });
