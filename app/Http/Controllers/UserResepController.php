@@ -187,7 +187,6 @@ public function store(Request $request)
                 'bahan' => $bahan,
                 'pembuatan' => $pembuatan, // hasil sudah dalam bentuk array
                 'kategori' => $UserResep->kategori,
-                'status' => $UserResep->status,
                 'image' => $UserResep->image,
             ]
         ]);
