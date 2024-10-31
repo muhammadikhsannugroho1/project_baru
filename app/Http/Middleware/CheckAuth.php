@@ -8,26 +8,24 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class CheckAuth
 {
-    /**
-     * Handle an incoming request.
-     */
+    
     public function handle(Request $request, Closure $next)
     {
-        // Cek apakah token ada dan valid
+       
         try {
             if (! $user = JWTAuth::parseToken()->authenticate()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'anda perlu login',
-                    'data' => null // Menambahkan 'data' dengan nilai null
-                ], 401); // Kode status 401 Unauthorized
+                    'data' => null 
+                ], 401); 
             }
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'anda perlu login',
-                'data' => null // Menambahkan 'data' dengan nilai null
-            ], 401); // Kode status 401 Unauthorized
+                'data' => null 
+            ], 401); 
         }
 
         return $next($request);
