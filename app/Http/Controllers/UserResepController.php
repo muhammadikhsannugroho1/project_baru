@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Cloudinary\Cloudinary;
+use Cloudinary\Transformation\Transformation;
 use App\Http\Resources\UserResepResource;
 use App\Models\userResep;
 use App\Models\userresep as ModelsUserresep;
@@ -26,6 +27,8 @@ class UserResepController extends Controller
     ]);
 }
 
+
+
 public function store(Request $request)
 {
     // Cek apakah pengguna sudah login
@@ -33,7 +36,7 @@ public function store(Request $request)
         return response()->json([
             'success' => false,
             'code' => 'S01',
-            'message' => 'perlu login',
+            'message' => 'Perlu login',
             'data' => null
         ], 401);
     }
@@ -61,9 +64,15 @@ public function store(Request $request)
     $UserResep = new UserResep();
     $image = $request->file('image');
 
-    // Simpan gambar dan ambil nama file
-    $imagePath = $image->storeAs('posts', $image->hashName(), 'public'); 
-    $UserResep->image = $image->hashName(); // Simpan hanya nama filenya saja
+    // Upload gambar ke Cloudinary
+    $cloudinary = new Cloudinary();
+    $uploadedImage = $cloudinary->uploadApi()->upload($image->getRealPath(), [
+        'folder' => 'posts', // Atur folder di Cloudinary
+        'public_id' => $image->hashName() // Nama file yang disimpan di Cloudinary
+    ]);
+
+    // Simpan URL gambar di database
+    $UserResep->image = $uploadedImage['secure_url']; // Simpan URL gambar yang aman
 
     // Set data lainnya
     $UserResep->name = $request->input('name');
@@ -87,6 +96,7 @@ public function store(Request $request)
         'data' => $UserResep
     ], 201);
 }
+
 
 
 
