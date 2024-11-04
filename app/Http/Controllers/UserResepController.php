@@ -188,6 +188,7 @@ public function store(Request $request)
                 'pembuatan' => $pembuatan, // hasil sudah dalam bentuk array
                 'kategori' => $UserResep->kategori,
                 'image' => $UserResep->image,
+                'deskripsi'=> $UserResep->deskripsi,
             ]
         ]);
     }
