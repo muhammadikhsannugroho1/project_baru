@@ -68,7 +68,12 @@ public function store(Request $request)
     $cloudinary = new Cloudinary();
     $uploadedImage = $cloudinary->uploadApi()->upload($image->getRealPath(), [
         'folder' => 'posts', // Atur folder di Cloudinary
-        'public_id' => $image->hashName() // Nama file yang disimpan di Cloudinary
+        'public_id' => $image->hashName(), // Nama file yang disimpan di Cloudinary
+        'transformation' => [
+        'width' => 500, // ganti 500 dengan lebar yang diinginkan
+        'height' => 500, // ganti 500 dengan tinggi yang diinginkan
+        'crop' => 'fit'
+    ]
     ]);
 
     // Simpan URL gambar di database
