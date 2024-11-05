@@ -13,12 +13,7 @@ class userResep extends Model
     protected $fillable = ['name','deskripsi','bahan','pembuatan','image','kategori'];
     protected $table = 'userresep_tabel'; 
 
-    protected function image(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($image) => url('/storage/posts/' . $image),
-        );
-    }
+  
     public function user()
     {
         return $this->belongsTo(User::class);
