@@ -36,7 +36,7 @@ public function store(Request $request)
         return response()->json([
             'success' => false,
             'code' => 'S01',
-            'message' => 'Perlu login',
+            'message' => 'perlu login',
             'data' => null
         ], 401);
     }
@@ -57,27 +57,16 @@ public function store(Request $request)
             'status' => false,
             'message' => 'Proses validasi gagal',
             'errors' => $validator->errors()
-        ], 401);
+        ], 400);
     }
 
     // Membuat instance baru dari model UserResep
     $UserResep = new UserResep();
     $image = $request->file('image');
 
-    // Upload gambar ke Cloudinary
-    $cloudinary = new Cloudinary();
-    $uploadedImage = $cloudinary->uploadApi()->upload($image->getRealPath(), [
-        'folder' => 'posts', // Atur folder di Cloudinary
-        'public_id' => $image->hashName(), // Nama file yang disimpan di Cloudinary
-        'transformation' => [
-        'width' => 500, // ganti 500 dengan lebar yang diinginkan
-        'height' => 500, // ganti 500 dengan tinggi yang diinginkan
-        'crop' => 'fit'
-    ]
-    ]);
-
-    // Simpan URL gambar di database
-    $UserResep->image = $uploadedImage['secure_url']; // Simpan URL gambar yang aman
+    // Simpan gambar dan ambil nama file
+    $imagePath = $image->storeAs('posts', $image->hashName(), 'public'); 
+    $UserResep->image = $image->hashName(); // Simpan hanya nama filenya saja
 
     // Set data lainnya
     $UserResep->name = $request->input('name');
