@@ -21,6 +21,12 @@ class UserResepController extends Controller
     ->select('id','name','image','kategori')
     ->get();
 
+    $UserResep = $UserResep->map(function ($item) {
+        // Menambahkan padding pada id dengan panjang 4 digit
+        $item->id = str_pad($item->id, 4, '0', STR_PAD_LEFT);
+        return $item;
+    });
+    dd($UserResep);
     return response()->json([
         'success' => true,
         'data' => $UserResep
@@ -182,6 +188,9 @@ public function store(Request $request)
        
         $bahan = json_decode($UserResep->bahan, true);
         // Mengembalikan data yang ditemukan
+        $UserResep->id = str_pad($UserResep->id, 4, '0', STR_PAD_LEFT);
+        dd($UserResep);
+        
         return response()->json([
             'status' => true,
             'message' => 'Detail data ditemukan',
@@ -194,6 +203,7 @@ public function store(Request $request)
                 'image' => $UserResep->image,
                 'deskripsi'=> $UserResep->deskripsi,
             ]
+            
         ]);
     }
     
@@ -251,7 +261,7 @@ public function store(Request $request)
     {
         // Mendapatkan pengguna yang sedang login
         $user = Auth::user();
-    
+        $resepSaya = UserResep::where('user_id', $user->id)->get();
         // Mengambil resep yang dibuat oleh pengguna tersebut
         $resepSaya = UserResep::where('user_id', $user->id)->get();
       // Cek apakah ada resep
