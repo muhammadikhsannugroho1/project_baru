@@ -15,23 +15,24 @@ use Illuminate\Support\Facades\Storage;
 class UserResepController extends Controller
 {
     public function index()
-{
-    // Mengambil resep dengan status 'diterima' saja
-    $UserResep = UserResep::where('status', 'diterima')
-    ->select('id','name','image','kategori')
-    ->get();
-
-    $UserResep = $UserResep->map(function ($item) {
-        // Menambahkan padding pada id dengan panjang 4 digit
-        $item->id = str_pad($item->id, 4, '0', STR_PAD_LEFT);
-        return $item;
-    });
-    dd($UserResep);
-    return response()->json([
-        'success' => true,
-        'data' => $UserResep
-    ]);
-}
+    {
+        // Mengambil resep dengan status 'diterima' saja dan melakukan pagination
+        $UserResep = UserResep::where('status', 'diterima')
+            ->select('id', 'name', 'image', 'kategori')
+            ->paginate(2); // Menampilkan 10 data per halaman
+    
+        // Menambahkan padding pada ID
+        $UserResep->getCollection()->transform(function ($item) {
+            $item->id = str_pad($item->id, 4, '0', STR_PAD_LEFT);
+            return $item;
+        });
+    
+        return response()->json([
+            'success' => true,
+            'data' => $UserResep
+        ]);
+    }
+    
 
 
 
@@ -284,7 +285,7 @@ public function store(Request $request)
         // Mengambil resep berdasarkan kategori dan status
         $UserResep = UserResep::where('kategori', $kategori)
             ->where('status', 'diterima')
-            ->get(['name','image','kategori']);
+            ->get(['id','name','image','kategori']);
     
         // Cek apakah resep ditemukan
         if ($UserResep->isEmpty()) {
