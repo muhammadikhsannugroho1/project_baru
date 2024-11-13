@@ -193,20 +193,11 @@ public function store(Request $request)
     
         
         return response()->json([
-            'status' => true,
-            'message' => 'Detail data ditemukan',
-            'data' => [
-                'id' => $UserResep->id,
-                'name' => $UserResep->name,
-                'bahan' => $bahan,
-                'pembuatan' => $pembuatan, // hasil sudah dalam bentuk array
-                'kategori' => $UserResep->kategori,
-                'image' => $UserResep->image,
-                'deskripsi'=> $UserResep->deskripsi,
-            ]
-            
+            'success' => true,
+            'data' => $UserResep
         ]);
     }
+    
     
 
     //untuk menghapus
