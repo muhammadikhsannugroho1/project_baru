@@ -190,7 +190,7 @@ public function store(Request $request)
         $bahan = json_decode($UserResep->bahan, true);
         // Mengembalikan data yang ditemukan
         $UserResep->id = str_pad($UserResep->id, 4, '0', STR_PAD_LEFT);
-        dd($UserResep);
+    
         
         return response()->json([
             'status' => true,
