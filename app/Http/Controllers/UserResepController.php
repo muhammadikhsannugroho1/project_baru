@@ -157,57 +157,48 @@ public function store(Request $request)
     }
     
     public function show($id)
-{
-    // Validasi ID apakah integer
-    $validator = Validator::make(['id' => $id], [
-        'id' => 'required|integer',
-    ]);
-
-    // Cek apakah validasi gagal
-    if ($validator->fails()) {
-        return response()->json([
-            'status' => false,
-            'message' => 'ID tidak valid',
-            'errors' => $validator->errors()
-        ], 401);
-    }
-
-    // Cari UserResep berdasarkan ID
-    $UserResep = UserResep::find($id);
-
-    // Jika data tidak ditemukan, kembalikan response dengan data null
-    if (!$UserResep) {
-        return response()->json([
-            'status' => false,
-            'message' => 'Data tidak ditemukan',
-            'data' => null
-        ], 401); // Menggunakan status code 200 agar tetap sukses dengan data null
-    }
-
-    // Decode data 'pembuatan' dan 'bahan' hanya saat membacanya
-    $pembuatan = json_decode($UserResep->pembuatan, true);
-    $bahan = json_decode($UserResep->bahan, true);
-
-    // Mengubah ID menjadi objek
-    $idObj = ['id' => str_pad($UserResep->id, 4, '0', STR_PAD_LEFT)];
-
-    // Mengembalikan data dengan ID sebagai objek
-    return response()->json([
-        'status' => true,
-        'message' => 'Detail data ditemukan',
-        'data' => [
-            'id' => $idObj,  // ID menjadi objek
-            'name' => $UserResep->name,
-            'bahan' => $bahan,
-            'pembuatan' => $pembuatan,
-            'kategori' => $UserResep->kategori,
-            'image' => $UserResep->image,
-            'deskripsi' => $UserResep->deskripsi,
-        ]
-    ]);
-}
-
+    {
+        // Validasi ID apakah integer
+        $validator = Validator::make(['id' => $id], [
+            'id' => 'required|integer', // Validasi id harus berupa array
+           
+        ]);
     
+        // Cek apakah validasi gagal
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'ID tidak valid',
+                'errors' => $validator->errors()
+            ], 401);
+        }
+    
+        // Cari UserResep berdasarkan ID
+        $UserResep = UserResep::find($id);
+    
+        // Jika data tidak ditemukan, kembalikan response dengan data null
+        if (!$UserResep) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data tidak ditemukan',
+                'data' => null
+            ], 401); // Menggunakan status code 200 agar tetap sukses dengan data null
+        }
+    
+        // Decode data 'pembuatan' hanya saat membacanya
+        $pembuatan = json_decode($UserResep->pembuatan, true);
+       
+        $bahan = json_decode($UserResep->bahan, true);
+        // Mengembalikan data yang ditemukan
+        $UserResep->id = str_pad($UserResep->id, 4, '0', STR_PAD_LEFT);
+    
+        
+        return response()->json([
+            'success' => true,
+            'data' => $UserResep
+            
+        ]);
+    }
     
     
 
