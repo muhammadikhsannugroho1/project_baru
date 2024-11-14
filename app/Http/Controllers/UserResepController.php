@@ -19,7 +19,7 @@ class UserResepController extends Controller
         // Mengambil resep dengan status 'diterima' saja dan melakukan pagination
         $UserResep = UserResep::where('status', 'diterima')
             ->select('id', 'name', 'image', 'kategori')
-            ->paginate(2); // Menampilkan 10 data per halaman
+            ->paginate(9); // Menampilkan 10 data per halaman
     
         // Menambahkan padding pada ID
         $UserResep->getCollection()->transform(function ($item) {
@@ -285,7 +285,7 @@ public function store(Request $request)
         // Mendapatkan kategori dari input
         $kategori = $request->input('kategori');
     
-        $perPage = 2;
+        $perPage = 9;
         // Mengambil resep berdasarkan kategori dan status
         $UserResep = UserResep::where('kategori', $kategori)
             ->where('status', 'diterima')
