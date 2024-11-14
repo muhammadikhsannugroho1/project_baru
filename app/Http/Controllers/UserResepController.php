@@ -285,6 +285,7 @@ public function store(Request $request)
         // Mendapatkan kategori dari input
         $kategori = $request->input('kategori');
     
+        $perPage = 2;
         // Mengambil resep berdasarkan kategori dan status
         $UserResep = UserResep::where('kategori', $kategori)
             ->where('status', 'diterima')
