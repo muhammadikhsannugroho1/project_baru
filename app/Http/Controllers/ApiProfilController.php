@@ -11,16 +11,17 @@ class ApiProfilController extends Controller
 {
     // Ambil token dari session atau storage (sesuaikan dengan implementasimu)
     $token = session('access_token'); // Pastikan token disimpan di session
-
+    //dd($token);
     if (!$token) {
         // Jika token tidak ada, arahkan ke halaman login
         return redirect()->route('login')->with('error', 'Anda harus login terlebih dahulu.');
     }
 
     // Kirim request ke API dengan header Authorization
-    $response = Http::withToken($token)->get('http://127.0.0.1:8081/api/profil');
+    $response = Http::withToken($token)->get('http://127.0.0.1:8081/api/profile');
 
     // Cek apakah respons sukses
+    //dd($response->body());
     if ($response->successful()) {
         $profil = $response->json(); // Parse respons ke array
 

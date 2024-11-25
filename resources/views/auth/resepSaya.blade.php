@@ -3,20 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="{{ asset ("asset/css/resepSaya.css") }}"/> 
-    <title>resepSaya</title>
+    <title>Resep Saya</title>
+    <link rel="stylesheet" href="{{ asset('asset/css/resepSaya.css') }}"/>
 </head>
 <body>
-    <header>
+    <div class="container">
         <h1>Resep Saya</h1>
-    </header>
-    <div id="recipe-list" class="recipe-list">
-        <!-- Data dari API akan dimasukkan di sini -->
-    </div>
-    <button class="home-button">HOME</button>
 
-    <script src="script.js"></script>
+        @if(isset($error))
+            <p class="error-message">{{ $error }}</p>
+        @else
+            @if(isset($data['data']) && count($data['data']) > 0)
+                @foreach($data['data'] as $resep)
+                    <div class="resep-card">
+                        <img src="{{ $resep['image'] }}" alt="Gambar {{ $resep['name'] }}">
+                        <div class="resep-info">
+                            <p class="resep-title">{{ $resep['name'] }}</p>
+                        </div>
+
+                        <!-- Tombol Delete -->
+                        <form action="{{ route('resep.delete', $resep['id']) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="delete-btn">Delete</button>
+                        </form>
+                    </div>
+                @endforeach
+            @else
+                <p>Tidak ada resep tersedia.</p>
+            @endif
+        @endif
+    </div>
+
+    <!-- Tombol Home -->
+    <a href="{{ route('dashboard') }}" class="home-btn">Home</a>
 </body>
-</html>
 </html>

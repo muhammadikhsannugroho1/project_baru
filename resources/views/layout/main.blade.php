@@ -15,7 +15,7 @@
         {{-- Nav --}}
         <nav>
             <ul><a href="{{ route('dashboard') }}">HOME</a></ul>
-            <ul><a href="javascript:void(0)" onclick="checkUploadLogin()">UPLODE RESEP</a></ul>
+            <ul><a href="{{ route('uplode') }}">UPLODE RESEP</a></ul>
             <ul><a href="{{ route('kategori') }}">KATEGORI</a></ul>
         </nav>
         
@@ -30,12 +30,12 @@
         <div id="dropdown-menu" class="dropdown-menu">
             <div class="menu-item">
                 <img src="https://img.icons8.com/ios-filled/24/000000/user.png" alt="account">
-                <button onclick="checkAccountLogin()">Account</button>
+                <button><a href="{{ route('profil') }}">account</a></button>
             </div>
             <div class="line"></div>
             <div class="menu-item">
                 <img src="https://img.icons8.com/ios-filled/24/000000/cookbook.png" alt="resep">
-                <button onclick="checkRecipeLogin()">Makanan Saya</button>
+                <button><a href="{{ 'resepsaya' }}">ResepSaya</a></button>
             </div>
         </div>
     </header>
@@ -57,7 +57,8 @@
 
     function checkUploadLogin() {
      const isLoggedIn = localStorage.getItem('token'); // Cek token login
-
+        console.log({isLoggedIn})
+        return false
      if (isLoggedIn) {
          // Pengguna sudah login, arahkan ke halaman upload resep
         window.location.href = "{{ route('uplode') }}"; // Ganti dengan route upload resep
