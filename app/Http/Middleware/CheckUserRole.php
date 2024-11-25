@@ -23,4 +23,5 @@ class CheckUserRole
 
         return $next($request);
     }
+    
 }
