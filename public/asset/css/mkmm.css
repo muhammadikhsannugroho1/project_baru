@@ -1,0 +1,84 @@
+.recipe-card {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.recipe-card:hover {
+    transform: scale(1.05);
+}
+
+.recipe-detail img {
+    width: 100%;
+    max-width: 600px;
+}
+
+/* Untuk form agar tampil responsif */
+form {
+    width: 100%;
+    display: flex;
+}
+
+h2 {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Tata letak untuk kartu */
+.recipe-grid {
+    display: flex; /* Mengaktifkan Flexbox */
+    justify-content: flex-start; /* Mengatur posisi awal kartu */
+    gap: 150px; /* Memberikan jarak antar kartu */
+    flex-wrap: wrap; /* Membiarkan kartu pindah baris jika ruang tidak cukup */
+}
+
+.recipe-card {
+    flex: 1 1 calc(33.33% - 20px); /* 3 kartu per baris, dikurangi jarak antar elemen */
+    max-width: 300px; /* Batas maksimum lebar kartu */
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin: 0; /* Hindari margin tambahan yang membuat layout berantakan */
+    transition: transform 0.3s ease;
+}
+
+.recipe-card:hover {
+    transform: scale(1.05);
+}
+
+.recipe-header {
+    background-color: #f9f1ff;
+    padding: 20px; /* Menyesuaikan padding agar tidak terlalu besar */
+    text-align: center;
+}
+
+.recipe-header h3 {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.recipe-header span {
+    font-size: 14px;
+    color: #6b6b6b;
+}
+
+.recipe-image img {
+    width: 100%; /* Pastikan gambar memenuhi lebar kartu */
+    height: 225px; /* Tinggi gambar seragam */
+    object-fit: cover; /* Memastikan gambar ter-crop dengan baik */
+    border-bottom: 1px solid #eee; /* Tambahan opsional untuk estetika */
+}
+
+/* Media Query untuk perangkat kecil */
+@media (max-width: 768px) {
+    .recipe-card {
+        flex: 1 1 100%; /* Tampilkan 1 kartu per baris di layar kecil */
+    }
+}
