@@ -13,7 +13,7 @@
             <img src="{{ asset('asset/img/png-transparent-computer-icons-user-profile-circle-abstract-miscellaneous-rim-account-thumbnail-removebg-preview.png') }}">
         </div>
       
-        <form action="{{ route('login') }}" method="POST">
+        <form action="{{ route('login',['referer'=>$ref]) }}" method="POST">
             @csrf
             <div class="form-group">
                 <input type="email" id="email" name="email" placeholder="Masukkan Email" required>

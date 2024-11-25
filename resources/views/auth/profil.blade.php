@@ -13,7 +13,7 @@
         </div>
 
         <div class="button-group">
-            <button class="btn-logout">logout</button>
+            <button class="btn-logout"><a href="{{ route('logout') }}">logout</a></button>
             <button class="btn-back"><a href="{{ route('dashboard') }}">kembali</a></button>
         </div>
     </div>

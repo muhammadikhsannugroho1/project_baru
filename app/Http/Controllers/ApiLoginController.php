@@ -9,7 +9,11 @@ use Illuminate\Http\Request;
 class ApiLoginController extends Controller
 {
     public function showLoginForm() {
-        return view('auth.login'); // Menampilkan view login
+        if(session('access_token')){
+            return redirect('/');
+        }
+        $ref = request()->query('referer')??null;
+        return view('auth.login',['ref'=>$ref]); // Menampilkan view login
     }
 
     public function Login(Request $request) {
@@ -35,6 +39,10 @@ class ApiLoginController extends Controller
             // Simpan token di sesi jika login berhasil
             //dd('hahah');
             session(['access_token' => $user->data->access_token]);
+            if($request->referer){
+                return redirect($request->referer);
+            }
+            
             return redirect()->route('uplode');  // Arahkan ke halaman upload
         } else {
             // Jika login gagal, tampilkan pesan error dari API

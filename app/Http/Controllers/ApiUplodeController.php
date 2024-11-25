@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 class ApiUplodeController extends Controller
 {
     public function create(){
+        if(!session('access_token')){
+            return redirect('login');
+        }
         $respons=Http::post('http://127.0.0.1:8081/api/userresep');
         $UserResepTable=json_decode($respons->body());
         // dd($UserResepTable);
