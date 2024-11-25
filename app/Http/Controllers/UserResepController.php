@@ -330,7 +330,66 @@ public function store(Request $request)
     ]);
 }
     
-  
+public function showProcessedResep(Request $request)
+{
+    // Mendapatkan status dari input (diterima/ditolak)
+    $status = $request->input('status');
+
+    // Validasi input status
+    if (!in_array($status, ['diterima', 'ditolak'])) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Status tidak valid. Gunakan "diterima" atau "ditolak".'
+        ], 400);
+    }
+
+    // Ambil resep berdasarkan status
+    $processedResep = UserResep::where('status', $status)
+        ->select('id', 'name', 'image', 'kategori') // Pilih kolom yang diperlukan saja
+        ->paginate(9);
+
+    // Tambahkan padding pada ID
+    $processedResep->getCollection()->transform(function ($item) {
+        $item->id = str_pad($item->id, 4, '0', STR_PAD_LEFT);
+        return $item;
+    });
+
+    // Cek apakah ada data
+    if ($processedResep->isEmpty()) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Data tidak ditemukan.',
+            'data' => []
+        ], 404);
+    }
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Data berhasil ditemukan.',
+        'data' => $processedResep
+    ]);
+}
+
+public function indexadmin()
+{
+    // Mengambil resep dengan status 'proses' saja dan melakukan pagination
+    $UserResep = UserResep::where('status', 'diproses')
+        ->select('id', 'name', 'image', 'kategori')
+        ->paginate(9); // Menampilkan 9 data per halaman
+
+    // Menambahkan padding pada ID
+    $UserResep->getCollection()->transform(function ($item) {
+        $item->id = str_pad($item->id, 4, '0', STR_PAD_LEFT);
+        return $item;
+    });
+
+    return response()->json([
+        'success' => true,
+        'data' => $UserResep
+    ]);
+}
+
+
 
 }
 

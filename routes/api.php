@@ -45,6 +45,7 @@ Route::group(['prefix' => 'userresep', 'as' => 'api.userresep'], function () {
     Route::get('/kategori/{kategori}', [UserResepController::class, 'filterkategori'])->name('filterkategori');
     Route::delete('/{id}', [UserResepController::class, 'destroy'])->name('destroy')->middleware('auth:api');
     Route::patch('/{id}/restore', [UserResepController::class, 'restore'])->name('restore')->middleware('auth:api');
+
 });
 
 Route::group(['middleware' => [CheckAuth::class]], function () {
@@ -54,6 +55,9 @@ Route::group(['middleware' => [CheckAuth::class]], function () {
     Route::get('/resepsaya/show', [UserResepController::class, 'showresepSaya']);
     Route::put('/resipes/{id}/accept', [AdminController::class, 'acceptRecipe']);
     Route::put('/resipes/{id}/reject', [AdminController::class, 'rejectRecipe']);
+    Route::delete('admin/{id}', [UserResepController::class, 'deleteResepByAdmin']);
+    Route::get('/resep/processed', [UserResepController::class, 'showProcessedResep']);
+    Route::get('/index/admin', [UserResepController::class, 'indexadmin']);
 });
 
 
