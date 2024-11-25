@@ -1,0 +1,66 @@
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #fbeeee;
+}
+
+/* Container Styling */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Card Styling */
+.card {
+    text-align: center;
+    background-color: #fff;
+    padding: 40px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border: 1px solid #f3dcdc;
+}
+
+/* Icon Styling */
+.success-icon {
+    width: 100px;
+    margin-bottom: 20px;
+}
+
+/* Message Text */
+.message {
+    font-size: 16px;
+    color: #444;
+    margin-bottom: 10px;
+}
+
+/* Title */
+.title {
+    font-size: 24px;
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Button Styling */
+.btn-login {
+    background-color: #f8b862;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-login:hover {
+    background-color: #e89c45;
+}

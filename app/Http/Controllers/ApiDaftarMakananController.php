@@ -50,6 +50,7 @@ class ApiDaftarMakananController extends Controller
         }
 
         // Mengembalikan view dengan data yang diperlukan
+        //dd($bahan, $pembuatan); 
         return view('auth.show', compact('name', 'bahan', 'pembuatan', 'kategori', 'imageUrl','deskripsi'));
     }
 

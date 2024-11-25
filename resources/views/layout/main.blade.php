@@ -4,43 +4,83 @@
     <meta charset="utf-8"/>
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>dashbaord</title>
-    <link rel="stylesheet" href="{{ asset ("asset/css/app.css") }}"/>
+    <title>dashboard</title>
+    <link rel="stylesheet" href="{{ asset('asset/css/app.css') }}"/>
     @yield('css')
 </head>
 <body>
     <header>
-            <img src="{{ asset("asset/img/Dapur_Ihsan-removebg-preview.png") }}"></h1>
-        {{-- nav --}}
+        <img src="{{ asset('asset/img/Dapur_Ihsan-removebg-preview.png') }}" alt="Logo">
+        
+        {{-- Nav --}}
         <nav>
-            <ul><a href="{{route("dashboard")}}">HOME</a></ul>
-            <ul><a href="{{ route("uplode") }}">UPLODE RESEP MU </a></ul>
-            <ul><a href="{{ route("kategori") }}">KATEGORI </a></ul>
+            <ul><a href="{{ route('dashboard') }}">HOME</a></ul>
+            <ul><a href="javascript:void(0)" onclick="checkUploadLogin()">UPLODE RESEP</a></ul>
+            <ul><a href="{{ route('kategori') }}">KATEGORI</a></ul>
         </nav>
         
         <!-- Menu Strip Tiga (Hamburger Icon) -->
-    <div class="hamburger" onclick="toggleMenu()">
-        <div></div>
-        <div></div>
-        <div></div>
-    </div>
-
-    <!-- Dropdown Menu yang akan muncul saat diklik -->
-    <div id="dropdown-menu" class="dropdown-menu">
-        <div class="menu-item">
-            <img src="https://img.icons8.com/ios-filled/24/000000/user.png" alt="account">
-            Account
-            <span>24</span>
+        <div class="hamburger" onclick="toggleMenu()">
+            <div></div>
+            <div></div>
+            <div></div>
         </div>
-        <div class="line"></div>
-        <div class="menu-item">
-            <img src="https://img.icons8.com/ios-filled/24/000000/cookbook.png" alt="resep">
-            Resep Makanan Saya
-        </div>
-    </div>
 
+        <!-- Dropdown Menu -->
+        <div id="dropdown-menu" class="dropdown-menu">
+            <div class="menu-item">
+                <img src="https://img.icons8.com/ios-filled/24/000000/user.png" alt="account">
+                <button onclick="checkAccountLogin()">Account</button>
+            </div>
+            <div class="line"></div>
+            <div class="menu-item">
+                <img src="https://img.icons8.com/ios-filled/24/000000/cookbook.png" alt="resep">
+                <button onclick="checkRecipeLogin()">Makanan Saya</button>
+            </div>
+        </div>
     </header>
+
     <script>
+      function checkAccountLogin() {
+        console.log("Token di localStorage:", localStorage.getItem('token'));
+    const token = localStorage.getItem('token'); // Ambil token dari localStorage
+
+    if (token) {
+        // Jika token ada, arahkan ke halaman profil
+        window.location.href = "{{ route('profil') }}"; // Pastikan mengarah ke profil
+    } else {
+        // Jika token tidak ada, arahkan ke halaman login
+        window.location.href = "{{ route('login') }}";
+    }
+}
+
+
+    function checkUploadLogin() {
+     const isLoggedIn = localStorage.getItem('token'); // Cek token login
+
+     if (isLoggedIn) {
+         // Pengguna sudah login, arahkan ke halaman upload resep
+        window.location.href = "{{ route('uplode') }}"; // Ganti dengan route upload resep
+     } else {
+         // Pengguna belum login, arahkan ke halaman login
+         window.location.href = "{{ route('login') }}";
+     }
+ }
+
+function checkRecipeLogin() {
+    const isLoggedIn = localStorage.getItem('token'); // Cek token login
+
+    if (isLoggedIn) {
+        // Pengguna sudah login, arahkan ke halaman makanan saya
+        window.location.href = "{{ route('ResepSaya') }}"; // Ganti dengan route resep saya
+    } else {
+        // Pengguna belum login, arahkan ke halaman login
+        window.location.href = "{{ route('login') }}";
+    }
+}
+
+
+
         // Fungsi untuk menampilkan atau menyembunyikan dropdown menu
         function toggleMenu() {
             var menu = document.getElementById("dropdown-menu");
@@ -62,8 +102,7 @@
             }
         });
     </script>
-    @yield('content')
 
-    
+    @yield('content')
 </body>
 </html>

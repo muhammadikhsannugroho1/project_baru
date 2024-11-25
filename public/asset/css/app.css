@@ -34,8 +34,7 @@ nav,ul{
 /* text navbar */
 nav a:hover{
     color: rgb(255, 0, 238);
-    transform: rotate(3deg);
-
+    transform: scale(1.05);
 }
 
 li{
@@ -88,6 +87,11 @@ form {
     align-items: center;
     cursor: pointer;
     border-radius: 10px;
+}
+
+.menu-item button{
+    border: none;
+    
 }
 
 .menu-item:hover {

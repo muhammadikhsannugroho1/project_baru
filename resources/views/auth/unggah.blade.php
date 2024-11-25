@@ -18,7 +18,6 @@
                 <div class="form-container">
                     <!-- Kiri: Upload Gambar -->
                     <div class="image-container">
-                        <img id="imagePreview" src="https://via.placeholder.com/250" alt="Resep Image">
                         <input type="file" id="imageUpload" name="image" accept="image/*">
                     </div>
     
@@ -26,7 +25,7 @@
                     <div class="form">
                         <!-- Input Judul dan Kategori -->
                         <div class="input-group">
-                            <input type="text" name="judul" placeholder="JUDUL" required>
+                            <input type="text" name="name" placeholder="JUDUL" required>
                             <input type="text" name="kategori" placeholder="KATEGORI" required>
                         </div>
     
@@ -41,7 +40,7 @@
                         <!-- Input Cara Buat -->
                         <div id="cara-container">
                             <div class="input-group">
-                                <textarea name="cara[]" placeholder="CARA BUAT" id="cara-1" required></textarea>
+                                <textarea name="pembuatan[]" placeholder="CARA BUAT" id="cara-1" required></textarea>
                             </div>
                         </div>
                         <button id="tambahCara" type="button">+CARA BUAT</button>

@@ -5,18 +5,25 @@
 @section('content')
 
     <div class="search-container">
-        <form action="/search" method="GET">
-            <input type="text" placeholder="Search.." name="search" class="search-input">
+        <form action="{{ route('search') }}" method="GET">
+            <input type="text" placeholder="Search.." name="query" class="search-input">
             <button type="submit" class="search-btn">Search</button>
+
+            @error('search')
+            <div class="alert alert-danger">
+                {{ $message }}
+            </div>
+        @enderror
         </form>
     </div>
 
     <div class="container">
         <h2>Resep Makanan</h2>
         <div class="recipe-grid">
-            {{-- @dd($data) --}}
-            @foreach ($data as $d)
-
+            
+            @foreach ($data->data as $d)
+            {{-- @dd($data,$d); --}}
+            <a href="{{ route('show', ['id' => $d->id]) }}">
                 <div class="recipe-card">
                     <div class="recipe-header">
                         <h3>{{ $d->name }}</h3>

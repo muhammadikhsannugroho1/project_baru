@@ -1,0 +1,53 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.recipe-grid {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.recipe-card {
+    background-color: #f7f7f7;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 400px;
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+    padding: 20px; /* Menambah padding di dalam card */
+    box-sizing: border-box; /* Agar padding tidak mempengaruhi ukuran card */
+}
+
+.recipe-header {
+    padding: 15px;
+    width: 100%;
+    background-color:#F5EFF7;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.recipe-image img {
+    width: 100%; /* Membuat gambar responsif */
+    height: auto; /* Menjaga rasio aspek gambar */
+    display: block;
+    margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+    .recipe-card {
+        width: 100%; /* Card akan mengambil 100% lebar pada layar kecil */
+    }
+}
