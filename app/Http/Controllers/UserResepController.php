@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Cloudinary\Cloudinary;
+use Cloudinary\Transformation\Transformation;
 use App\Http\Resources\UserResepResource;
 use App\Models\userResep;
 use App\Models\userresep as ModelsUserresep;
@@ -14,20 +15,39 @@ use Illuminate\Support\Facades\Storage;
 class UserResepController extends Controller
 {
     public function index()
-{
-    // Mengambil resep dengan status 'diterima' saja
-    $UserResep = UserResep::where('status', 'diterima')
-    ->select('id','name','image','kategori')
-    ->get();
+    {
+        // Mengambil resep dengan status 'diterima' saja dan melakukan pagination
+        $UserResep = UserResep::where('status', 'diterima')
+            ->select('id', 'name', 'image', 'kategori')
+            ->paginate(9); // Menampilkan 10 data per halaman
+    
+        // Menambahkan padding pada ID
+        $UserResep->getCollection()->transform(function ($item) {
+            $item->id = str_pad($item->id, 4, '0', STR_PAD_LEFT);
+            return $item;
+        });
+    
+        return response()->json([
+            'success' => true,
+            'data' => $UserResep
+        ]);
+    }
+    
 
-    return response()->json([
-        'success' => true,
-        'data' => $UserResep
-    ]);
-}
+
 
 public function store(Request $request)
 {
+    // Cek apakah pengguna sudah login
+    if (!Auth::check()) {
+        return response()->json([
+            'success' => false,
+            'code' => 'S01',
+            'message' => 'perlu login',
+            'data' => null
+        ], 401);
+    }
+
     // Validasi data input
     $validator = Validator::make($request->all(), [
         'image'     => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -54,7 +74,6 @@ public function store(Request $request)
     // Simpan gambar dan ambil nama file
     $imagePath = $image->storeAs('posts', $image->hashName(), 'public'); 
     $UserResep->image = $image->hashName(); // Simpan hanya nama filenya saja
-    
 
     // Set data lainnya
     $UserResep->name = $request->input('name');
@@ -63,8 +82,6 @@ public function store(Request $request)
     $UserResep->pembuatan = json_encode($request->input('pembuatan')); // Mengonversi array ke JSON
     $UserResep->kategori = $request->input('kategori');
     $UserResep->status = 'diproses';
-
-    
 
     // Mendapatkan ID pengguna yang sedang login
     $user = Auth::user();
@@ -82,7 +99,7 @@ public function store(Request $request)
 }
 
 
-    
+
 
     public function update(Request $request, $id)
     {
@@ -102,7 +119,7 @@ public function store(Request $request)
                 'status' => false,
                 'message' => 'Proses validasi gagal',
                 'errors' => $validator->errors()
-            ], 400);
+            ], 401);
         }
     
         // Cari UserResep berdasarkan ID
@@ -143,7 +160,8 @@ public function store(Request $request)
     {
         // Validasi ID apakah integer
         $validator = Validator::make(['id' => $id], [
-            'id' => 'required|integer',
+            'id' => 'required|integer', // Validasi id harus berupa array
+           
         ]);
     
         // Cek apakah validasi gagal
@@ -152,7 +170,7 @@ public function store(Request $request)
                 'status' => false,
                 'message' => 'ID tidak valid',
                 'errors' => $validator->errors()
-            ], 400);
+            ], 401);
         }
     
         // Cari UserResep berdasarkan ID
@@ -164,7 +182,7 @@ public function store(Request $request)
                 'status' => false,
                 'message' => 'Data tidak ditemukan',
                 'data' => null
-            ], 400); // Menggunakan status code 200 agar tetap sukses dengan data null
+            ], 401); // Menggunakan status code 200 agar tetap sukses dengan data null
         }
     
         // Decode data 'pembuatan' hanya saat membacanya
@@ -172,6 +190,9 @@ public function store(Request $request)
        
         $bahan = json_decode($UserResep->bahan, true);
         // Mengembalikan data yang ditemukan
+        $UserResep->id = str_pad($UserResep->id, 4, '0', STR_PAD_LEFT);
+    
+        
         return response()->json([
             'status' => true,
             'message' => 'Detail data ditemukan',
@@ -181,11 +202,14 @@ public function store(Request $request)
                 'bahan' => $bahan,
                 'pembuatan' => $pembuatan, // hasil sudah dalam bentuk array
                 'kategori' => $UserResep->kategori,
-                'status' => $UserResep->status,
                 'image' => $UserResep->image,
+                'deskripsi'=> $UserResep->deskripsi,
             ]
+            
         ]);
     }
+    
+    
     
 
     //untuk menghapus
@@ -200,7 +224,7 @@ public function store(Request $request)
         return response()->json([
             'status' => false,
             'message' => 'Resep tidak ditemukan atau Anda tidak memiliki hak untuk menghapus resep ini.'
-        ], 404);
+        ], 401);
     }
 
     // Hapus gambar jika ada
@@ -227,9 +251,10 @@ public function store(Request $request)
             return response()->json(['success' => false, 'message' => 'Query is required'], 400);
         }
 
-        // Cari resep berdasarkan nama atau deskripsi
-        $UserResep = userResep::where('name', 'LIKE', "%{$query}%")
-            ->get();
+       
+    $UserResep = userResep::where('status', 'diterima')
+    ->where('name', 'LIKE', "%{$query}%")  
+    ->get();
 
         return response()->json(['success' => true, 'data' => $UserResep]);
     }
@@ -240,7 +265,7 @@ public function store(Request $request)
     {
         // Mendapatkan pengguna yang sedang login
         $user = Auth::user();
-    
+        $resepSaya = UserResep::where('user_id', $user->id)->get();
         // Mengambil resep yang dibuat oleh pengguna tersebut
         $resepSaya = UserResep::where('user_id', $user->id)->get();
       // Cek apakah ada resep
@@ -260,10 +285,11 @@ public function store(Request $request)
         // Mendapatkan kategori dari input
         $kategori = $request->input('kategori');
     
+        $perPage = 9;
         // Mengambil resep berdasarkan kategori dan status
         $UserResep = UserResep::where('kategori', $kategori)
             ->where('status', 'diterima')
-            ->get(['name','image','kategori']);
+            ->get(['id','name','image','kategori']);
     
         // Cek apakah resep ditemukan
         if ($UserResep->isEmpty()) {
@@ -295,7 +321,7 @@ public function store(Request $request)
         return response()->json([
             'success' => false,
             'message' => 'Data tidak ditemukan'
-        ], 404);
+        ], 401);
     }
 
     return response()->json([
@@ -304,7 +330,67 @@ public function store(Request $request)
     ]);
 }
     
-    
+public function showProcessedResep(Request $request)
+{
+    // Mendapatkan status dari input (diterima/ditolak)
+    $status = $request->input('status');
+
+    // Validasi input status
+    if (!in_array($status, ['diterima', 'ditolak'])) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Status tidak valid. Gunakan "diterima" atau "ditolak".'
+        ], 400);
+    }
+
+    // Ambil resep berdasarkan status
+    $processedResep = UserResep::where('status', $status)
+        ->select('id', 'name', 'image', 'kategori') // Pilih kolom yang diperlukan saja
+        ->paginate(9);
+
+    // Tambahkan padding pada ID
+    $processedResep->getCollection()->transform(function ($item) {
+        $item->id = str_pad($item->id, 4, '0', STR_PAD_LEFT);
+        return $item;
+    });
+
+    // Cek apakah ada data
+    if ($processedResep->isEmpty()) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Data tidak ditemukan.',
+            'data' => []
+        ], 404);
+    }
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Data berhasil ditemukan.',
+        'data' => $processedResep
+    ]);
+}
+
+public function indexadmin()
+{
+    // Mengambil resep dengan status 'proses' saja dan melakukan pagination
+    $UserResep = UserResep::where('status', 'diproses')
+        ->select('id', 'name', 'image', 'kategori')
+        ->paginate(9); // Menampilkan 9 data per halaman
+
+    // Menambahkan padding pada ID
+    $UserResep->getCollection()->transform(function ($item) {
+        $item->id = str_pad($item->id, 4, '0', STR_PAD_LEFT);
+        return $item;
+    });
+
+    return response()->json([
+        'success' => true,
+        'data' => $UserResep
+    ]);
+}
+
+
+
 }
 
 
